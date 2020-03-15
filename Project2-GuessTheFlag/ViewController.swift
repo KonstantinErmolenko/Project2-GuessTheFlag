@@ -18,6 +18,8 @@ class ViewController: UIViewController {
     private var countries = [String]()
     private var score = 0
     private var correctAnswer = 0
+    private var questionsAnswered = 0
+    private var gameOver = false
     
     // MARK: - Life Cycle Methods
     override func viewDidLoad() {
@@ -31,11 +33,16 @@ class ViewController: UIViewController {
     @IBAction func buttonTapped(_ sender: UIButton) {
         var title: String
         
+        if gameOver { return }
+        
+        questionsAnswered += 1
+        
         if sender.tag == correctAnswer {
             title = "Correct"
             score += 1
         } else {
-            title = "Wrong"
+            let chosenFlag = countries[sender.tag].uppercased()
+            title = "Wrong! That’s the flag of \(chosenFlag)"
             score -= 1
         }
         
@@ -44,7 +51,7 @@ class ViewController: UIViewController {
                                    preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Continue",
                                       style: .default,
-                                      handler: askQuestion))
+                                      handler: nextAction))
         present(alert, animated: true)
     }
     
@@ -66,7 +73,18 @@ class ViewController: UIViewController {
         button3.layer.borderColor = UIColor.lightGray.cgColor
     }
     
-    private func askQuestion(action: UIAlertAction! = nil) {
+    private func setTitle() {
+        title = "\(countries[correctAnswer].uppercased()) (Score: \(score))"
+    }
+    private func nextAction(action: UIAlertAction! = nil) {
+        if questionsAnswered >= 5 {
+            showResult()
+        } else {
+            askQuestion(action)
+        }
+    }
+    
+    private func askQuestion(_ action: UIAlertAction! = nil) {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
         
@@ -74,7 +92,19 @@ class ViewController: UIViewController {
         button2.setImage(UIImage(named: countries[1]), for: .normal)
         button3.setImage(UIImage(named: countries[2]), for: .normal)
         
-        title = countries[correctAnswer].uppercased()
+        setTitle()
+    }
+    
+    private func showResult() {
+        gameOver = true
+
+        setTitle()
+        
+        let alert = UIAlertController(title: "Game is over",
+                                      message: "Your score is \(score)",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
 

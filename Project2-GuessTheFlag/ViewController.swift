@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     // MARK: - Private Properties
     private var countries = [String]()
     private var score = 0
+    private var correctAnswer = 0
     
     // MARK: - Life Cycle Methods
     override func viewDidLoad() {
@@ -44,9 +45,14 @@ class ViewController: UIViewController {
     }
     
     private func askQuestion() {
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+        
         button1.setImage(UIImage(named: countries[0]), for: .normal)
         button2.setImage(UIImage(named: countries[1]), for: .normal)
         button2.setImage(UIImage(named: countries[2]), for: .normal)
+        
+        title = countries[correctAnswer].uppercased()
     }
 }
 

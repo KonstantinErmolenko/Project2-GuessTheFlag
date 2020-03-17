@@ -26,6 +26,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         initializeCountries()
         customizeAppearance()
+        setupNavigationBar()
         askQuestion()
     }
     
@@ -74,8 +75,18 @@ class ViewController: UIViewController {
     }
     
     private func setTitle() {
-        title = "\(countries[correctAnswer].uppercased()) (Score: \(score))"
+        title = "\(countries[correctAnswer].uppercased())"
     }
+    
+    private func setupNavigationBar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Score",
+            style: .plain,
+            target: self,
+            action: #selector(showScore)
+        )
+    }
+    
     private func nextAction(action: UIAlertAction! = nil) {
         if questionsAnswered >= 5 {
             showResult()
@@ -105,6 +116,17 @@ class ViewController: UIViewController {
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
+    }
+    
+    @objc  private func showScore() {
+        let ac = UIAlertController(
+            title: "Total score",
+            message: "Your score is \(score)",
+            preferredStyle: .alert
+        )
+        
+        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(ac, animated: true)
     }
 }
 
